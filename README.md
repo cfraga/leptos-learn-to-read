@@ -8,7 +8,8 @@ Simple web app that rotates through a list of words written only with a specific
 - [ ] fetch words from API instead of static medium
 - [ ] sentence mode instead of single words
 - [ ] configurable timer for time attack mode
-- [ ] counter of read words (resets with timer)
+- [X] counter of read words
+- [ ] counter of read words resets with timer
 - [ ] cookie to store highest streak/letters config
 - [ ] dont let the same word/sentence repeat on a play session
 - [ ] ...

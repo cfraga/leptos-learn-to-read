@@ -46,12 +46,16 @@ fn select_word() -> &'static str {
     existing_words.choose(&mut rand::thread_rng()).expect("could not pick string from vec")
 }
 
+
+
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
     let (count, set_count) = create_signal(0);
     let (word, set_word) = create_signal("");
+    let (allowed_words, set_allowed_words) = create_signal("ap".to_string());
+    let (all_words, set_all_words) = create_signal(false);
 
     let on_click = move |_| {
         set_count.update(|count| *count += 1);
@@ -63,8 +67,18 @@ fn HomePage() -> impl IntoView {
         <h1>"Vamos Ler!"</h1>
         <br/>
         <div style="font-size: 20vw;">{word}</div>
-        <button on:click=on_click>"Outra Palavra!"</button>
+        <div style="width: 100vw; height: 5vh; background-color:aquamarine;" on:click=on_click>"Outra Palavra!"</div>
         <div><span>"Já li "</span><span class="font-weight: bold;">{count}</span><span>" palavras!"</span></div>
+        <div>
+            <div>
+                <span>letras permitidas: </span>  
+                <input type="text" on:input= move |e| { set_allowed_words(event_target_value(&e))} prop:value=allowed_words prop:disabled=all_words />
+            </div>
+            <div>
+                <span> usar todas as letras: </span>
+                <input type="checkbox" prop:checked=all_words on:input = move |e| { set_all_words(event_target_checked(&e))} />
+            </div>
+        </div>
     }
 }
 

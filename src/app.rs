@@ -96,14 +96,12 @@ fn HomePage() -> impl IntoView {
     
     let is_reading = create_rw_signal(false);
     let (word, set_word) = create_signal("");
-    let (count, set_count) = create_signal(0);
-
+    let remaining_words = move || settings.word_pool.with(|words| words.len());
 
     let get_new_word = move || {
         
         match select_word(settings.word_pool) {
             Some(w) => {
-                set_count.update(|count| *count += 1); 
                 set_word(w)
             },
             None => is_reading.set(false)
@@ -127,7 +125,7 @@ fn HomePage() -> impl IntoView {
                 true => view! { 
                     <div style="font-size: 20vw;">{word}</div>
                     <div style="width: 100vw; height: 5vh; background-color:aquamarine;" on:click=click_new_word>"Outra Palavra!"</div>
-                    <div><span>"Já li "</span><span class="font-weight: bold;">{count}</span><span>" palavras!"</span></div>
+                    <div><span>"Faltam"</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                 }.into_view(),
                 false => view! {
                     <SetupRun settings=settings.clone() onready=start_reading />

@@ -2,7 +2,7 @@ use leptos::{*, ev::{click, MouseEvent}};
 use leptos_meta::*;
 use leptos_router::*;
 use regex::Regex;
-use rand::seq::SliceRandom;
+use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
 
 
 // pub enum Difficulty {
@@ -65,11 +65,21 @@ fn sanitize_filter(chars: String) -> String {
     chars.chars().filter( |c| c.is_alphabetic()).collect()
 }
 
-fn select_word() -> &'static str {
-    let existing_words = vec! [ "pata", "batata", "pena", "Pedro", "Papá", "Tia", "touro", "tempo"];
+fn select_word(existing_words: RwSignal<Vec<&str>>) -> Option<&'static str> {
+        existing_words.try_update( |words| {
+            logging::log!("attempting a word");
+            let maybe_word = words.iter().enumerate().choose(&mut thread_rng());
 
-    existing_words.choose(&mut rand::thread_rng()).expect("could not pick string from vec")
-}
+            match maybe_word {
+                Some((i, &word)) => {
+                    logging::log!("got a word");
+                    words.remove(i);
+                    Some(word)
+                },
+                None => { logging::log!("no more words"); None }
+            }
+        }).unwrap()
+    }
 
 
 
@@ -90,8 +100,14 @@ fn HomePage() -> impl IntoView {
 
 
     let get_new_word = move || {
-        set_count.update(|count| *count += 1);
-        set_word(select_word());
+        
+        match select_word(settings.word_pool) {
+            Some(w) => {
+                set_count.update(|count| *count += 1); 
+                set_word(w)
+            },
+            None => is_reading.set(false)
+        }
     };
 
     let click_new_word = move |_| {

@@ -4,15 +4,15 @@
 Simple web app that rotates through a list of words written only with a specific set of letters, to help my kid practice reading as he learns new letters. Built in rust/leptos because I wanna gain experience with the lang/framework.
 
 ## Features/Wishlist
-- [ ] Select allowed letters
-- [ ] fetch words from API instead of static medium
-- [ ] sentence mode instead of single words
-- [ ] configurable timer for time attack mode
+- [ ] Select allowed chars
+- [X] dont let the same word repeat on a play session
+- [ ] difficulty levels (increasing length of words)
 - [X] counter of read words
 - [ ] counter of read words resets with timer
 - [ ] cookie to store highest streak/letters config
-- [ ] dont let the same word/sentence repeat on a play session
-- [ ] ...
+- [ ] fetch words from API instead of static medium
+- [ ] sentence mode instead of single words
+- [ ] configurable timer for time attack mode
 - [ ] ...
 
 

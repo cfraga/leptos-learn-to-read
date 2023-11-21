@@ -1199,6 +1199,7 @@ dependencies = [
  "leptos_router",
  "rand",
  "regex",
+ "serde",
  "wasm-bindgen",
 ]
 

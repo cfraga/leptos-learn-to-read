@@ -4,6 +4,7 @@ use leptos_router::*;
 use regex::Regex;
 use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
 
+use crate::lexicanum;
 
 // pub enum Difficulty {
 //     Easy,
@@ -16,7 +17,7 @@ pub struct RunSettings {
     num_words: RwSignal<usize>,
     allowed_chars: RwSignal<String>,
     all_words: RwSignal<bool>,
-    word_pool: RwSignal<Vec::<&'static str>>, 
+    word_pool: RwSignal<Vec::<String>>, 
     // difficulty: RwSignal<Difficulty>,
 }
 
@@ -45,38 +46,15 @@ pub fn App() -> impl IntoView {
     }
 }
 
-
-fn get_word_pool(allowed_chars: Option<String>, num_words: usize) -> Vec<&'static str> {
-    let existing_words = vec! [ "pata", "batata", "pena", "Pedro", "Papá", "Tia", "touro", "tempo"];
-
-    match allowed_chars {
-        None => if existing_words.len() > num_words { existing_words.into_iter().take(num_words).collect() } else { existing_words },
-        Some(chars) => {
-            let allowed_regex = Regex::new(format!("^[{}]+$", sanitize_filter(chars)).as_str()).unwrap();
-            existing_words
-                .into_iter()
-                .filter(|word| allowed_regex.is_match(word))
-                .collect()
-        },
-    }
-}
-
-fn sanitize_filter(chars: String) -> String {
-    chars.chars().filter( |c| c.is_alphabetic()).collect()
-}
-
-fn select_word(existing_words: RwSignal<Vec<&str>>) -> Option<&'static str> {
+fn select_word(existing_words: RwSignal<Vec<String>>) -> Option<String> {
         existing_words.try_update( |words| {
             logging::log!("attempting a word");
-            let maybe_word = words.iter().enumerate().choose(&mut thread_rng());
-
-            match maybe_word {
-                Some((i, &word)) => {
+            match words.len() {
+                1.. => {
                     logging::log!("got a word");
-                    words.remove(i);
-                    Some(word)
+                    Some(words.swap_remove(0))
                 },
-                None => { logging::log!("no more words"); None }
+                0 => { logging::log!("no more words"); None }
             }
         }).unwrap()
     }
@@ -89,13 +67,13 @@ fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
     let settings = RunSettings {
         num_words: create_rw_signal(10),
-        word_pool: create_rw_signal(Vec::<&str>::new()),
+        word_pool: create_rw_signal(Vec::<String>::new()),
         allowed_chars: create_rw_signal("ap".to_string()),
         all_words: create_rw_signal(false),
     };
     
     let is_reading = create_rw_signal(false);
-    let (word, set_word) = create_signal("");
+    let (word, set_word) = create_signal("".to_string());
     let remaining_words = move || settings.word_pool.with(|words| words.len());
 
     let get_new_word = move || {
@@ -138,15 +116,29 @@ fn HomePage() -> impl IntoView {
 #[component]
 fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> impl IntoView {
 
+    let get_server_words = create_action(
+        move |options: &(Option<String>, usize)| {
+            let cloned_options = options.clone();
+            logging::log!("calling server for words");
+            async move { lexicanum::get_word_pool(cloned_options.0, cloned_options.1).await }
+        }
+    );
+
     let start_new_run = move |_| { 
         let filter = match settings.all_words.get() {
             true => None,
             false=> Some(settings.allowed_chars.get()),
         };
-
-        settings.word_pool.set(get_word_pool(filter, settings.num_words.get()));
-        onready.call(1);
+        get_server_words.dispatch((filter, settings.num_words.get()));
     };
+    
+    create_effect(move |_| {
+        if let Some(Ok(word_pool)) = get_server_words.value().get() {
+            logging::log!("words file was loaded");
+            settings.word_pool.set(word_pool);
+            onready.call(1);
+        }
+    });
 
     view! {
         <h1>"Vamos Ler!"</h1>

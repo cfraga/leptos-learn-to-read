@@ -101,7 +101,7 @@ fn HomePage() -> impl IntoView {
         { move || 
             match is_reading() {
                 true => view! { 
-                    <div style="font-size: 20vw;">{word}</div>
+                    <div style="font-size: 20vw;"><a target="window" href={move || format!("https://dicionario.priberam.org/{}",word())}>{word}</a></div>
                     <div style="width: 100vw; height: 5vh; background-color:aquamarine;" on:click=click_new_word>"Outra Palavra!"</div>
                     <div><span>"Faltam"</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                 }.into_view(),

@@ -1,8 +1,6 @@
-use leptos::{*, ev::{click, MouseEvent}};
+use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use regex::Regex;
-use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
 use serde::{Serialize, Deserialize};
 
 use crate::lexicanum;
@@ -98,7 +96,7 @@ fn HomePage() -> impl IntoView {
     };
 
 
-    let start_reading= move |i:i32| {
+    let start_reading= move |_| {
         is_reading.set(true);
         get_new_word();
     };
@@ -159,15 +157,15 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
                 <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.all_words.set(event_target_checked(&e))} />
             </div>
             <div> "Dificuldade"</div>
-            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |e| {settings.difficulty.set(Difficulty::Easiest)} />
+            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.difficulty.set(Difficulty::Easiest)} />
                 <span>"🌶  "</span>
-                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |e| {settings.difficulty.set(Difficulty::Easy)}/>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.difficulty.set(Difficulty::Easy)}/>
                 <span>"🌶🌶  "</span>
-                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |e| {settings.difficulty.set(Difficulty::Medium)} />
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.difficulty.set(Difficulty::Medium)} />
                 <span>"🌶🌶🌶  "</span>
-                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |e| {settings.difficulty.set(Difficulty::Hard)}/>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.difficulty.set(Difficulty::Hard)}/>
                 <span>"🌶🌶🌶🌶  "</span>
-                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |e| {settings.difficulty.set(Difficulty::Hardest)} />
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.difficulty.set(Difficulty::Hardest)} />
                 <span>"🌶🌶🌶🌶🌶  "</span>
         </div>
         <div class="start-button" on:click=start_new_run>"Começar!"</div>

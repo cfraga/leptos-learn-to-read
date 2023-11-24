@@ -1,8 +1,8 @@
 use std::fs::File;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{prelude::*, BufReader};
 use leptos::{server, ServerFnError};
 use regex::Regex;
-use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
+use rand::{seq::{IteratorRandom}, thread_rng};
 
 use crate::app::Difficulty;
 
@@ -21,7 +21,6 @@ fn sanitize_filter(chars: String) -> String {
 
 #[server]
 pub async fn get_word_pool(allowed_chars: Option<String>, num_words: usize, diff: Difficulty) -> Result<Vec<String>, ServerFnError> {
-    // let existing_words = vec! [ "pata", "batata", "pena", "Pedro", "Papá", "Tia", "touro", "tempo"];
     let existing_words = load_words_from("wordlist/wordlist-ao-latest.txt".to_string()).await;
 
     Ok(match allowed_chars {

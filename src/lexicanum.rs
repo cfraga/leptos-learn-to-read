@@ -45,16 +45,16 @@ pub async fn get_word_pool(allowed_chars: Option<String>, num_words: usize, diff
 fn allowed_difficulty(w: &String, diff: &Difficulty) -> bool {
     match diff {
         Difficulty::Easiest => {
-            w.len() < 6
+            w.len() < 6 && w.rfind("-").is_none()
         },
         Difficulty::Easy => {
-            w.len() < 7 && w.len() > 2
+            w.len() < 7 && w.len() > 2 && w.rfind("-").is_none()
         },
         Difficulty::Medium => {
-            w.len() < 8 && w.len() > 4
+            w.len() < 8 && w.len() > 4 && w.rfind("-").is_none()
         },
         Difficulty::Hard => {
-            w.len() < 12 && w.len() > 5
+            w.len() < 12 && w.len() > 5 && w.matches("-").collect::<Vec<&str>>().len() < 2
         },
         Difficulty::Hardest => {
             w.len() > 10

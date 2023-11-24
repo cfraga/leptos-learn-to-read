@@ -3,14 +3,18 @@ use leptos_meta::*;
 use leptos_router::*;
 use regex::Regex;
 use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
+use serde::{Serialize, Deserialize};
 
 use crate::lexicanum;
 
-// pub enum Difficulty {
-//     Easy,
-//     Medium,
-//     Hard,
-// }
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum Difficulty {
+    Easiest,
+    Easy,
+    Medium,
+    Hard,
+    Hardest,
+}
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct RunSettings {
@@ -18,7 +22,7 @@ pub struct RunSettings {
     allowed_chars: RwSignal<String>,
     all_words: RwSignal<bool>,
     word_pool: RwSignal<Vec::<String>>, 
-    // difficulty: RwSignal<Difficulty>,
+    difficulty: RwSignal<Difficulty>,
 }
 
 #[component]
@@ -27,9 +31,11 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
+        <meta charset="UTF-8" />
+
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet
-        <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
+        <Stylesheet id="leptos" href="assets/main.css"/>
 
         // sets the document title
         <Title text="Welcome to Leptos"/>
@@ -70,6 +76,7 @@ fn HomePage() -> impl IntoView {
         word_pool: create_rw_signal(Vec::<String>::new()),
         allowed_chars: create_rw_signal("ap".to_string()),
         all_words: create_rw_signal(false),
+        difficulty: create_rw_signal(Difficulty::Easiest)
     };
     
     let is_reading = create_rw_signal(false);
@@ -101,9 +108,9 @@ fn HomePage() -> impl IntoView {
         { move || 
             match is_reading() {
                 true => view! { 
-                    <div style="font-size: 20vw;"><a target="window" href={move || format!("https://dicionario.priberam.org/{}",word())}>{word}</a></div>
-                    <div style="width: 100vw; height: 5vh; background-color:aquamarine;" on:click=click_new_word>"Outra Palavra!"</div>
-                    <div><span>"Faltam"</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
+                    <div class="remaining-words"><span>"Faltam"</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
+                    <div class="active-word"><a target="window" href={move || format!("https://dicionario.priberam.org/{}",word())}>{word}</a></div>
+                    <div class="next-word-button" on:click=click_new_word>"Outra Palavra!"</div>
                 }.into_view(),
                 false => view! {
                     <SetupRun settings=settings.clone() onready=start_reading />
@@ -117,10 +124,10 @@ fn HomePage() -> impl IntoView {
 fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> impl IntoView {
 
     let get_server_words = create_action(
-        move |options: &(Option<String>, usize)| {
+        move |options: &(Option<String>, usize, Difficulty)| {
             let cloned_options = options.clone();
             logging::log!("calling server for words");
-            async move { lexicanum::get_word_pool(cloned_options.0, cloned_options.1).await }
+            async move { lexicanum::get_word_pool(cloned_options.0, cloned_options.1, cloned_options.2).await }
         }
     );
 
@@ -129,28 +136,41 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
             true => None,
             false=> Some(settings.allowed_chars.get()),
         };
-        get_server_words.dispatch((filter, settings.num_words.get()));
+        get_server_words.dispatch((filter, settings.num_words.get(), settings.difficulty.get()));
     };
     
     create_effect(move |_| {
         if let Some(Ok(word_pool)) = get_server_words.value().get() {
-            logging::log!("words file was loaded");
+            logging::log!("words file was loaded. {} words retrieved", word_pool.len());
             settings.word_pool.set(word_pool);
             onready.call(1);
         }
     });
 
     view! {
-        <h1>"Vamos Ler!"</h1>
-        <div>
-            <span>letras permitidas: </span>  
-            <input type="text" on:input= move |e| { settings.allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
+        <h1 class="active-word"> "Vamos Ler!"</h1>
+        <div class="settings-section">
+            <div>
+                <span>letras permitidas: </span>  
+                <input type="text" on:input= move |e| { settings.allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
+            </div>
+            <div>
+                <span> usar todas as letras: </span>
+                <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.all_words.set(event_target_checked(&e))} />
+            </div>
+            <div> "Dificuldade"</div>
+            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |e| {settings.difficulty.set(Difficulty::Easiest)} />
+                <span>"🌶  "</span>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |e| {settings.difficulty.set(Difficulty::Easy)}/>
+                <span>"🌶🌶  "</span>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |e| {settings.difficulty.set(Difficulty::Medium)} />
+                <span>"🌶🌶🌶  "</span>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |e| {settings.difficulty.set(Difficulty::Hard)}/>
+                <span>"🌶🌶🌶🌶  "</span>
+                <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |e| {settings.difficulty.set(Difficulty::Hardest)} />
+                <span>"🌶🌶🌶🌶🌶  "</span>
         </div>
-        <div>
-            <span> usar todas as letras: </span>
-            <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.all_words.set(event_target_checked(&e))} />
-        </div>
-        <div style="width: 100vw; height: 5vh; background-color:aquamarine;" on:click=start_new_run>"Começar!"</div>
+        <div class="start-button" on:click=start_new_run>"Começar!"</div>
     }
 }
 

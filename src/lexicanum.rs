@@ -4,6 +4,8 @@ use leptos::{server, ServerFnError};
 use regex::Regex;
 use rand::{seq::{SliceRandom, IteratorRandom}, thread_rng};
 
+use crate::app::Difficulty;
+
 #[server]
 async fn load_words_from(file_path: String) -> Result<Vec<String>, ServerFnError> {
     let f = File::open(file_path)?;
@@ -18,22 +20,44 @@ fn sanitize_filter(chars: String) -> String {
 }
 
 #[server]
-pub async fn get_word_pool(allowed_chars: Option<String>, num_words: usize) -> Result<Vec<String>, ServerFnError> {
+pub async fn get_word_pool(allowed_chars: Option<String>, num_words: usize, diff: Difficulty) -> Result<Vec<String>, ServerFnError> {
     // let existing_words = vec! [ "pata", "batata", "pena", "Pedro", "Papá", "Tia", "touro", "tempo"];
     let existing_words = load_words_from("wordlist/wordlist-ao-latest.txt".to_string()).await;
 
     Ok(match allowed_chars {
-        None => existing_words?
-                    .choose_multiple(&mut thread_rng(), num_words)
-                    .map(|s| s.to_owned())
-                    .collect(),
+        None => existing_words
+                    .into_iter()
+                    .flatten()
+                    .filter(|w| allowed_difficulty(w, &diff))
+                    .choose_multiple(&mut thread_rng(), num_words),
         Some(chars) => {
             let allowed_regex = Regex::new(format!("^[{}]+$", sanitize_filter(chars)).as_str()).unwrap();
             existing_words
                 .into_iter()
                 .flatten()
-                .filter(|word| allowed_regex.is_match(word))
+                .filter(|w| allowed_difficulty(w, &diff))
+                .filter(|w| allowed_regex.is_match(w))
                 .choose_multiple(&mut thread_rng(), num_words)
         },
     })
+}
+
+fn allowed_difficulty(w: &String, diff: &Difficulty) -> bool {
+    match diff {
+        Difficulty::Easiest => {
+            w.len() < 6
+        },
+        Difficulty::Easy => {
+            w.len() < 7 && w.len() > 2
+        },
+        Difficulty::Medium => {
+            w.len() < 8 && w.len() > 4
+        },
+        Difficulty::Hard => {
+            w.len() < 12 && w.len() > 5
+        },
+        Difficulty::Hardest => {
+            w.len() > 10
+        },
+    }
 }

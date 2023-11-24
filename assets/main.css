@@ -1,0 +1,37 @@
+.active-word {
+    width: auto;
+    font-size: 10vh;
+    line-height: 10vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: center;
+}
+
+.next-word-button {
+    width: auto;
+    font-size: 4vh;
+    height: 8vh;
+    line-height: 8vh;
+    background-color: aquamarine;
+    text-align: center;
+    margin-left: 5vw;
+    margin-right: 5vw;
+}
+
+.start-button {
+    width: auto;
+    font-size: 4vh;
+    height: 8vh;
+    line-height: 8vh;
+    background-color: aquamarine;
+    text-align: center;
+    margin-left: 5vw;
+    margin-right: 5vw;
+}
+
+.settings-section {
+    width: auto;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: center;
+}

@@ -1,3 +1,7 @@
+body {
+    font-family: sans-serif;
+}
+
 .active-word {
     width: auto;
     font-size: 10vh;
@@ -14,8 +18,8 @@
     line-height: 8vh;
     background-color: aquamarine;
     text-align: center;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    margin: 7vw;
+    border-radius: 5px;
 }
 
 .start-button {
@@ -25,13 +29,28 @@
     line-height: 8vh;
     background-color: aquamarine;
     text-align: center;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    margin: 7vw;
+    border-radius: 5px;
 }
 
 .settings-section {
     width: auto;
     margin-left: 5vw;
     margin-right: 5vw;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
     text-align: center;
+}
+
+.difficulty-title {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.settings-difficulty {
+    margin-left: -10vw;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    display: inline-block;
+    text-align: left;
 }

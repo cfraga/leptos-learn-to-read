@@ -6,7 +6,7 @@ Simple web app that rotates through a list of words written only with a specific
 ## Features/Wishlist
 - [X] Select allowed chars
 - [X] dont let the same word repeat on a play session
-- [ ] difficulty levels (increasing length of words)
+- [X] difficulty levels (increasing length of words)
 - [X] counter of read words
 - [X] counter of read words resets when current session is over
 - [ ] cookie to store highest streak/letters config
@@ -28,7 +28,6 @@ By default, `cargo-leptos` uses `nightly` Rust, `cargo-generate`, and `sass`. If
 1. `rustup toolchain install nightly --allow-downgrade` - make sure you have Rust nightly
 2. `rustup target add wasm32-unknown-unknown` - add the ability to compile Rust to WebAssembly
 3. `cargo install cargo-generate` - install `cargo-generate` binary (should be installed automatically in future)
-4. `npm install -g sass` - install `dart-sass` (should be optional in future)
 
 ## Executing a Server on a Remote Machine Without the Toolchain
 After running a `cargo leptos build --release` the minimum files needed are:

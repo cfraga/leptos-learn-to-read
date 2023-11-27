@@ -2,9 +2,27 @@ body {
     font-family: sans-serif;
 }
 
+.settings-title {
+    width: auto;
+    font-size: 10vh;
+    line-height: 10vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: center;
+    font-weight: bold;
+}
+
 .active-word {
     width: auto;
     font-size: 10vh;
+    line-height: 20vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: center;
+}
+.remaining-words {
+    width: auto;
+    font-size: 3vh;
     line-height: 10vh;
     margin-left: 5vw;
     margin-right: 5vw;

@@ -106,9 +106,9 @@ fn HomePage() -> impl IntoView {
         { move || 
             match is_reading() {
                 true => view! { 
-                    <div class="remaining-words"><span>"Faltam"</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                     <div class="active-word"><a target="window" href={move || format!("https://dicionario.priberam.org/{}",word())}>{word}</a></div>
                     <div class="next-word-button" on:click=click_new_word>"Outra Palavra!"</div>
+                    <div class="remaining-words"><span>"Faltam "</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                 }.into_view(),
                 false => view! {
                     <SetupRun settings=settings.clone() onready=start_reading />
@@ -146,7 +146,7 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
     });
 
     view! {
-        <h1 class="active-word"> "Vamos Ler!"</h1>
+        <h1 class="settings-title"> "Vamos Ler!"</h1>
         <div class="settings-section">
             <div>
                 <span> usar todas as letras: </span>

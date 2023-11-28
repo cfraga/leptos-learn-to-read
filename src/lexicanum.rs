@@ -76,8 +76,8 @@ mod tests {
 
     #[test]
     fn test_difficulty() {
-        let easiest_words = [ "papa".to_owned(), "pá".to_owned() ]; //pá is len() == 3 although it should be 2 chars for difficulty purposes
-        let easy_words = [ "batata".to_owned(), "resolve".to_owned(), "papa".to_owned()];
+        let easiest_words = [ "papa".to_owned(), "ai".to_owned() ];
+        let easy_words = [ "batata".to_owned(), "resolve".to_owned(), "papa".to_owned(), "pá".to_owned()]; //pá is len() == 3 because á is 2 unicode chars
         let medium_words = [ "impotente".to_owned(), "alarvará".to_owned(), "batata".to_owned(), "resolve".to_owned() ];
         let hard_words = [ "hipotético".to_owned(), "pô-los".to_owned() ,"impotente".to_owned(), "alarvará".to_owned(), "batata".to_owned(), "resolve".to_owned()];
         let hardest_words = [ "anticonstitucionalissimamente".to_owned(), "aâæãée-24ēçćc-bbò".to_owned() ];

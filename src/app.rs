@@ -107,8 +107,8 @@ fn HomePage() -> impl IntoView {
             match is_reading() {
                 true => view! { 
                     <div class="active-word"><a target="window" href={move || format!("https://dicionario.priberam.org/{}",word())}>{word}</a></div>
+                    <div class="remaining-words"><span>"Faltam "</span><span style="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                     <div class="next-word-button" on:click=click_new_word>"Outra Palavra!"</div>
-                    <div class="remaining-words"><span>"Faltam "</span><span class="font-weight: bold;">{remaining_words}</span><span>" palavras!"</span></div>
                 }.into_view(),
                 false => view! {
                     <SetupRun settings=settings.clone() onready=start_reading />

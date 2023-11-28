@@ -47,10 +47,10 @@ fn allowed_difficulty(w: &String, diff: &Difficulty) -> bool {
             w.len() < 6 && w.rfind("-").is_none()
         },
         Difficulty::Easy => {
-            w.len() < 7 && w.len() > 2 && w.rfind("-").is_none()
+            w.len() < 8 && w.len() > 2 && w.rfind("-").is_none()
         },
         Difficulty::Medium => {
-            w.len() < 8 && w.len() > 4 && w.rfind("-").is_none()
+            w.len() < 10 && w.len() > 4 && w.rfind("-").is_none()
         },
         Difficulty::Hard => {
             w.len() < 12 && w.len() > 5 && w.matches("-").collect::<Vec<&str>>().len() < 2
@@ -76,15 +76,30 @@ mod tests {
 
     #[test]
     fn test_difficulty() {
-        let easiest_words = [ "papa".to_owned(), "pote".to_owned() ];
-        let easy_words = [ "Robert'); DROP TABLE Students;--".to_owned(), "aâæãée24ēçćcbbò".to_owned() ];
-        let medium_words = [ "Robert'); DROP TABLE Students;--".to_owned(), "aâæãée24ēçćcbbò".to_owned() ];
-        let hard_words = [ "Robert'); DROP TABLE Students;--".to_owned(), "aâæãée24ēçćcbbò".to_owned() ];
-        let hardest_words = [ "anticonstitucionalissimamente".to_owned(), "aâæãée24ēçćcbbò".to_owned() ];
+        let easiest_words = [ "papa".to_owned(), "pá".to_owned() ]; //pá is len() == 3 although it should be 2 chars for difficulty purposes
+        let easy_words = [ "batata".to_owned(), "resolve".to_owned(), "papa".to_owned()];
+        let medium_words = [ "impotente".to_owned(), "alarvará".to_owned(), "batata".to_owned(), "resolve".to_owned() ];
+        let hard_words = [ "hipotético".to_owned(), "pô-los".to_owned() ,"impotente".to_owned(), "alarvará".to_owned(), "batata".to_owned(), "resolve".to_owned()];
+        let hardest_words = [ "anticonstitucionalissimamente".to_owned(), "aâæãée-24ēçćc-bbò".to_owned() ];
 
-        let all_words = [easiest_words.clone(), easy_words.clone(), medium_words.clone(), hard_words.clone(), hardest_words.clone()].concat();
+        let mut all_words = [easiest_words.as_slice(), easy_words.as_slice(), medium_words.as_slice(), hard_words.as_slice(), hardest_words.as_slice()].concat();
+        all_words.sort();
+        all_words.dedup();
 
-        let easiest_allowed: Vec<String> = all_words.into_iter().filter(|w| allowed_difficulty(w,&Difficulty::Easiest)).collect();
-        assert_eq!(easiest_allowed, easiest_words);
+        let easiest_allowed: Vec<String> = all_words.iter().filter(|w| allowed_difficulty(w,&Difficulty::Easiest)).map(|s| s.clone()).collect();
+        assert_eq!(easiest_allowed, easiest_words, "Easiest difficulty is returning {:?} when it should be {:?}", easiest_allowed, easiest_words);
+
+        let easy_allowed: Vec<String> = all_words.iter().filter(|w| allowed_difficulty(w,&Difficulty::Easy)).map(|s| s.clone()).collect();
+        assert_eq!(easy_allowed, easy_words, "Easy difficulty is returning {:?} when it should be {:?}", easy_allowed, easy_words);
+
+        let medium_allowed: Vec<String> = all_words.clone().into_iter().filter(|w| allowed_difficulty(w,&Difficulty::Medium)).collect();
+        assert_eq!(medium_allowed, medium_words, "Medium difficulty is returning {:?} when it should be {:?}", medium_allowed, medium_words);
+
+        let hard_allowed: Vec<String> = all_words.clone().into_iter().filter(|w| allowed_difficulty(w,&Difficulty::Hard)).collect();
+        assert_eq!(hard_allowed, hard_words, "Hard difficulty is returning {:?} when it should be {:?}", hard_allowed, hard_words);
+
+        let hardest_allowed: Vec<String> = all_words.into_iter().filter(|w| allowed_difficulty(w,&Difficulty::Hardest)).collect();
+        assert_eq!(hardest_allowed, hardest_words, "Hardest difficulty is returning {:?} when it should be {:?}", hardest_allowed, hardest_words);
+
     }
 }

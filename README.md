@@ -9,10 +9,11 @@ Simple web app that rotates through a list of words written only with a specific
 - [X] difficulty levels (increasing length of words)
 - [X] counter of read words
 - [X] counter of read words resets when current session is over
+- [ ] support characters with accent marks ('e.g. é') wen filtering by their corresponding non accented character
 - [ ] cookie to store highest streak/letters config
 - [ ] fetch words from API instead of static medium
 - [ ] sentence mode instead of single words
-- [ ] configurable timer for time attack mode
+- [ ] time attack mode
 - [X] link to online dictionary
 
 

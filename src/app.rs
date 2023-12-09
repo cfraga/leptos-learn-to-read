@@ -36,7 +36,7 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="assets/main.css"/>
 
         // sets the document title
-        <Title text="Welcome to Leptos"/>
+        <Title text="Vamos Ler!"/>
 
         // content for this welcome page
         <Router>
@@ -54,11 +54,11 @@ fn select_word(existing_words: RwSignal<Vec<String>>) -> Option<String> {
         existing_words.try_update( |words| {
             logging::log!("attempting a word");
             match words.len() {
-                1.. => {
+                0 => { logging::log!("no more words"); None },
+                _ => {
                     logging::log!("got a word");
                     Some(words.swap_remove(0))
                 },
-                0 => { logging::log!("no more words"); None }
             }
         }).unwrap()
     }

@@ -6,9 +6,10 @@ use serde::{Serialize, Deserialize};
 
 use crate::lexicanum;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
 pub enum Difficulty {
     Easiest,
+    #[default]
     Easy,
     Medium,
     Hard,
@@ -18,11 +19,13 @@ pub enum Difficulty {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RunSettings {
     num_words: RwSignal<usize>,
+    word_pool: RwSignal<Vec::<String>>, 
     allowed_chars: Signal<String>,
     set_allowed_chars: WriteSignal<String>,
-    all_words: RwSignal<bool>,
-    word_pool: RwSignal<Vec::<String>>, 
-    difficulty: RwSignal<Difficulty>,
+    all_words: Signal<bool>,
+    set_all_words: WriteSignal<bool>,
+    difficulty: Signal<Difficulty>,
+    set_difficulty: WriteSignal<Difficulty>,
 }
 
 #[component]
@@ -71,14 +74,19 @@ fn select_word(existing_words: RwSignal<Vec<String>>) -> Option<String> {
 #[component]
 fn HomePage() -> impl IntoView {
     let (allowed_chars, set_allowed_chars, _) = use_local_storage::<String, JsonCodec>("allowed_chars");
+    let (all_words, set_all_words, _) = use_local_storage::<bool, JsonCodec>("all_words");
+    let (difficulty, set_difficulty, _) = use_local_storage::<Difficulty, JsonCodec>("difficulty");
+
     // Creates a reactive value to update the button
     let settings = RunSettings {
         num_words: create_rw_signal(10),
         word_pool: create_rw_signal(Vec::<String>::new()),
         allowed_chars: allowed_chars,
         set_allowed_chars: set_allowed_chars,
-        all_words: create_rw_signal(false),
-        difficulty: create_rw_signal(Difficulty::Easiest)
+        all_words: all_words,
+        set_all_words: set_all_words,
+        difficulty: difficulty,
+        set_difficulty: set_difficulty,
     };
     
     let is_reading = create_rw_signal(false);
@@ -154,7 +162,7 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
         <div class="settings-section">
             <div>
                 <span> usar todas as letras: </span>
-                <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.all_words.set(event_target_checked(&e))} />
+                <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.set_all_words.set(event_target_checked(&e))} />
             </div>
             <div>
                 <span>letras permitidas: </span>  
@@ -163,23 +171,23 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
             <div class="settings-difficulty">
                 <div class="difficulty-title"> "Dificuldade"</div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.difficulty.set(Difficulty::Easiest)} />
+                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easiest)} />
                     <span>"🌶  "</span>
                 </div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.difficulty.set(Difficulty::Easy)}/>
+                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easy)}/>
                     <span>"🌶🌶  "</span>
                 </div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.difficulty.set(Difficulty::Medium)} />
+                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Medium)} />
                     <span>"🌶🌶🌶  "</span>
                 </div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.difficulty.set(Difficulty::Hard)}/>
+                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hard)}/>
                     <span>"🌶🌶🌶🌶  "</span>
                 </div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.difficulty.set(Difficulty::Hardest)} />
+                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hardest)} />
                     <span>"🌶🌶🌶🌶🌶  "</span>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
+use leptos_use::storage::{use_local_storage, JsonCodec};
 use serde::{Serialize, Deserialize};
 
 use crate::lexicanum;
@@ -17,7 +18,8 @@ pub enum Difficulty {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RunSettings {
     num_words: RwSignal<usize>,
-    allowed_chars: RwSignal<String>,
+    allowed_chars: Signal<String>,
+    set_allowed_chars: WriteSignal<String>,
     all_words: RwSignal<bool>,
     word_pool: RwSignal<Vec::<String>>, 
     difficulty: RwSignal<Difficulty>,
@@ -68,11 +70,13 @@ fn select_word(existing_words: RwSignal<Vec<String>>) -> Option<String> {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
+    let (allowed_chars, set_allowed_chars, _) = use_local_storage::<String, JsonCodec>("allowed_chars");
     // Creates a reactive value to update the button
     let settings = RunSettings {
         num_words: create_rw_signal(10),
         word_pool: create_rw_signal(Vec::<String>::new()),
-        allowed_chars: create_rw_signal("ap".to_string()),
+        allowed_chars: allowed_chars,
+        set_allowed_chars: set_allowed_chars,
         all_words: create_rw_signal(false),
         difficulty: create_rw_signal(Difficulty::Easiest)
     };
@@ -154,7 +158,7 @@ fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> imp
             </div>
             <div>
                 <span>letras permitidas: </span>  
-                <input type="text" on:input= move |e| { settings.allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
+                <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
             </div>
             <div class="settings-difficulty">
                 <div class="difficulty-title"> "Dificuldade"</div>

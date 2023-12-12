@@ -34,13 +34,13 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        <Script async_ = "true" src="https://www.googletagmanager.com/gtag/js?id=G-H1679FJB7T"></Script>
+        <Script async_ = "true" src="https://www.googletagmanager.com/gtag/js?id=G-X6E71G2155"></Script>
         <Script>{r#"
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
           
-            gtag('config', 'G-H1679FJB7T');
+            gtag('config', 'G-X6E71G2155);
             "#}
         </Script>
         <meta charset="UTF-8" />

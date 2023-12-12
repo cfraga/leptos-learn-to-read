@@ -34,6 +34,15 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
+        <Script async_ = "true" src="https://www.googletagmanager.com/gtag/js?id=G-H1679FJB7T"></Script>
+        <Script>{r#"
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'G-H1679FJB7T');
+            "#}
+        </Script>
         <meta charset="UTF-8" />
 
         // injects a stylesheet into the document <head>

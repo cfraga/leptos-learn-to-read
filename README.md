@@ -12,6 +12,7 @@ Simple web app that rotates through a list of words written only with a specific
 - [X] link to online dictionary
 - [X] localstorage to store game settings
 - [X] Preprocess file instead of loading it on every request
+- [ ] on screen keyboard for letters
 - [ ] support characters with accent marks ('e.g. é') when filtering by their corresponding non accented character
 - [ ] sentence mode instead of single words
 - [ ] leaderboards/streak/high score calculation

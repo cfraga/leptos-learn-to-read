@@ -3,43 +3,63 @@ use std::io::{prelude::*, BufReader};
 use leptos::{server, ServerFnError};
 use regex::Regex;
 use rand::{seq::{IteratorRandom}, thread_rng};
-
+use std::collections::HashMap;
+use rand::prelude::SliceRandom;
 use crate::app::Difficulty;
+use cfg_if::cfg_if;
 
-#[server]
-async fn load_words_from(file_path: String) -> Result<Vec<String>, ServerFnError> {
-    let f = File::open(file_path)?;
-    let reader = BufReader::new(f);
-    Ok(reader.lines()
-        .flat_map( |maybe_l| maybe_l.ok())
-        .collect())
+cfg_if! {
+    if #[cfg(feature = "ssr")] {
+        use leptos_actix::extract;
+        
+        fn sanitize_filter(chars: &String) -> String {
+            chars.chars().filter( |c| c.is_alphabetic()).collect()
+        }
+        
+        pub fn load_words(filename: &str) -> HashMap<Difficulty, Vec<String>> {
+            let f: File = File::open(filename).expect("couldnt open file");
+            let reader = BufReader::new(f);
+            let mut words_per_diff: HashMap<Difficulty, Vec<String>> = HashMap::new();
+            
+            for d in [Difficulty::Easiest, Difficulty::Easy, Difficulty::Medium, Difficulty::Hard, Difficulty::Hardest].iter() {
+                words_per_diff.insert(d.clone(), vec![]);
+            }
+            
+            for l in reader.lines().flat_map( |maybe_l| maybe_l.ok()) {
+                for d in [Difficulty::Easiest, Difficulty::Easy, Difficulty::Medium, Difficulty::Hard, Difficulty::Hardest].iter().filter(|d| allowed_difficulty(&l, d)) {
+                    words_per_diff.get_mut(d).unwrap().push(l.clone());
+                }
+            }
+        
+            words_per_diff
+        }
+    }
 }
-
-fn sanitize_filter(chars: &String) -> String {
-    chars.chars().filter( |c| c.is_alphabetic()).collect()
-}
-
+        
 #[server]
 pub async fn get_word_pool(allowed_chars: Option<String>, num_words: usize, diff: Difficulty) -> Result<Vec<String>, ServerFnError> {
-    let existing_words = load_words_from("wordlist/wordlist-ao-latest.txt".to_string()).await;
-
-    Ok(match allowed_chars {
-        None => existing_words
+    let words_data = extract!(actix_web::web::Data<HashMap<Difficulty, Vec<String>>>);
+        let words = words_data.get(&diff).unwrap();
+        
+        Ok(match allowed_chars {
+            None => 
+                words
+                    .choose_multiple(&mut thread_rng(), num_words)
+                    .map(|s| s.clone())
+                    .collect(),
+            Some(chars) => {
+                let allowed_regex = Regex::new(format!("^[{}]+$", sanitize_filter(&chars)).as_str()).unwrap();
+                words
+                    .iter()
+                    .filter(|w| allowed_regex.is_match(w))
+                    .choose_multiple(&mut thread_rng(), num_words)
                     .into_iter()
-                    .flatten()
-                    .filter(|w| allowed_difficulty(w, &diff))
-                    .choose_multiple(&mut thread_rng(), num_words),
-        Some(chars) => {
-            let allowed_regex = Regex::new(format!("^[{}]+$", sanitize_filter(&chars)).as_str()).unwrap();
-            existing_words
-                .into_iter()
-                .flatten()
-                .filter(|w| allowed_difficulty(w, &diff))
-                .filter(|w| allowed_regex.is_match(w))
-                .choose_multiple(&mut thread_rng(), num_words)
-        },
-    })
+                    .map(|s| s.clone())
+                    .collect()
+                },
+        })
 }
+
 
 fn allowed_difficulty(w: &String, diff: &Difficulty) -> bool {
     match diff {

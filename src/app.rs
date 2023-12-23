@@ -6,7 +6,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::lexicanum;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum Difficulty {
     Easiest,
     #[default]

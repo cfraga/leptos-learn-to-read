@@ -1,5 +1,6 @@
 pub mod app;
 pub mod lexicanum;
+pub mod setup_run;
 
 use cfg_if::cfg_if;
 

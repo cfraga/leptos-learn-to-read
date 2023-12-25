@@ -1,11 +1,21 @@
 use leptos::*;
 use leptos_meta::*;
+use leptos_use::storage::{use_local_storage, JsonCodec};
+
 use crate::app::{ Difficulty, RunSettings};
 use crate::lexicanum;
 
+#[derive(Clone, Debug, PartialEq)]
+struct ToggleableKey {
+    id: String,
+    label: String,
+    value: String,
+    is_active: Signal<bool>,
+    set_active: WriteSignal<bool>,
+}
+
 #[component]
 pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> impl IntoView {
-
     let get_server_words = create_action(
         move |options: &(Option<String>, usize, Difficulty)| {
             let cloned_options = options.clone();
@@ -39,6 +49,7 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
             </div>
             <div>
                 <span>letras permitidas: </span>  
+                <ToggleKeyboard />
                 <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
             </div>
             <div class="settings-difficulty">
@@ -66,5 +77,48 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
             </div>
         </div>
         <div class="start-button" on:click=start_new_run>"Começar!"</div>
+    }
+}
+
+#[component]
+pub fn toggle_keyboard() -> impl IntoView {
+    let ids_labels_vals = vec![
+        ("tk_A", "A", "aAàÀáÁâÂãÃ"),
+        ("tk_E", "E", "eEèÈéÉêÊ"),
+        ("tk_I", "I", "iIíÍ"),
+        ("tk_O", "O", "oOôÔòÒóÓõÕ"),
+        ("tk_U", "U", "uUùÙúÚ"),
+    ];
+
+    let (keys, set_keys) = create_signal(
+        ids_labels_vals
+        .iter()
+        .map(|(id,l,v)| { 
+            let (rs, ws, _) = use_local_storage::<bool, JsonCodec>(id); 
+            ToggleableKey { id: id.to_string(), label: l.to_string(), value: v.to_string(), is_active: rs, set_active: ws }
+        })
+        .collect::<Vec<_>>());
+
+    view! {
+        <div class="keyboard">
+            <For 
+                each=keys
+                key=|key| key.id.clone()
+                children= move |key| {
+                    view! {
+                        <ToggleKey key=key></ToggleKey>
+                    }
+                }
+            />
+        </div>
+    }
+}
+
+#[component]
+fn toggle_key(key: ToggleableKey) -> impl IntoView {
+    view!{
+        <div class="key" class:active=key.is_active on:click= move |_| { key.set_active.set(!key.is_active.get()) }  >
+            {key.label}
+        </div>
     }
 }

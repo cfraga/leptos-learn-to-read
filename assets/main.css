@@ -76,3 +76,23 @@ body {
     display: inline-block;
     text-align: left;
 }
+
+.keyboard {
+    line-height: 10vh;
+}
+
+.key {
+  margin-left: 0.5vw;
+  margin-right: 0.5vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  text-align: center;
+  border-radius: 5px;
+  background-color: beige;
+  display: inline;
+  padding: 0.5vw;
+}
+
+.active {
+    background-color: plum;
+}

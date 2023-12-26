@@ -49,7 +49,7 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
             </div>
             <div>
                 <span>letras permitidas: </span>  
-                <ToggleKeyboard />
+                <ToggleKeyboard set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
                 <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
             </div>
             <div class="settings-difficulty">
@@ -81,7 +81,7 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
 }
 
 #[component]
-pub fn toggle_keyboard() -> impl IntoView {
+pub fn toggle_keyboard( set_all_values: WriteSignal<String> ) -> impl IntoView {
     let ids_labels_vals = vec![
         ("tk_A", "A", "aAàÀáÁâÂãÃ"),
         ("tk_E", "E", "eEèÈéÉêÊ"),
@@ -98,6 +98,18 @@ pub fn toggle_keyboard() -> impl IntoView {
             ToggleableKey { id: id.to_string(), label: l.to_string(), value: v.to_string(), is_active: rs, set_active: ws }
         })
         .collect::<Vec<_>>());
+
+    let derived_all_values = create_effect( move |_| {
+        keys.with( |vals| 
+            set_all_values.set(
+                vals.iter()
+                    .filter(|k| k.is_active.get())
+                    .map(|k| k.value.clone() )
+                    .collect::<Vec<String>>()
+                    .join("")
+            )
+        )
+    });
 
     view! {
         <div class="keyboard">

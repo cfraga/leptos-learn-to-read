@@ -1,13 +1,13 @@
 body {
     font-family: sans-serif;
+    background: #F1FAEE;
 }
 
 .settings-title {
+    font-family: 'Londrina Shadow', sans-serif;
     width: auto;
-    font-size: 10vh;
-    line-height: 10vh;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    font-size: 25vmin;
+    margin: 1vmin 5vmin 1vmin 5vmin;
     text-align: center;
     font-weight: bold;
 }
@@ -34,7 +34,7 @@ body {
     font-size: 4vmax;
     height: 8vmax;
     line-height: 8vmax;
-    background-color: aquamarine;
+    background-color: #e63946;
     text-align: center;
     margin: 2vmax 7vmax 2vmax 7vmax;
     border-radius: 5px;
@@ -45,20 +45,23 @@ body {
     font-size: 4vmax;
     height: 8vmax;
     line-height: 8vmax;
-    background-color: aquamarine;
+    background-color: #e63946;
+    color: #F1FAEE;
     text-align: center;
     margin: 7vmax;
     border-radius: 5px;
 }
 
+.flex-center {
+    display: flex;
+    justify-content: center;
+}
+
 .settings-section {
-    width: auto;
-    margin-left: 5vw;
-    margin-right: 5vw;
-    margin-top: 2vh;
-    margin-bottom: 2vh;
+    width: 90vmin;
+    margin: 1vmin 5vmin 1vmin 5vmin;
     text-align: center;
-    height: 40vh;
+    height: 50vh;
 }
 .settings-section > div {
     margin: 1vh 0 1vh 0;
@@ -78,20 +81,28 @@ body {
 }
 
 .keyboard {
-    line-height: 10vh;
+    line-height: 10vmin;
+    display: flex;
+    width: 100%;
+    align-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .key {
-  margin-left: 0.5vw;
-  margin-right: 0.5vw;
+  margin: 1vmin;
   text-align: center;
   border-radius: 5px;
-  background-color: beige;
-  display: inline;
-  padding: 0.5vw;
+  background-color: #A8DADC;
+  color: #1D3557;
+  display: block;
+  padding: 0.5vmin;
   font-weight: bold;
+  min-width: 25px;
 }
 
 .active {
-    background-color: plum;
+    background-color: #457b9d;
+    color: #F1FAEE;
 }

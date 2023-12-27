@@ -45,7 +45,8 @@ pub fn App() -> impl IntoView {
             "#}
         </Script>
         <meta charset="UTF-8" />
-
+        <Stylesheet href="https://fonts.cdnfonts.com/css/londrina-shadow" />
+                
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet
         <Stylesheet id="leptos" href="assets/main.css"/>

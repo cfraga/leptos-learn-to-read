@@ -42,37 +42,39 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
 
     view! {
         <h1 class="settings-title"> "Vamos Ler!"</h1>
-        <div class="settings-section">
-            <div>
-                <span> usar todas as letras: </span>
-                <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.set_all_words.set(event_target_checked(&e))} />
-            </div>
-            <div>
-                <span>letras permitidas: </span>  
-                <ToggleKeyboard set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
-                <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
-            </div>
-            <div class="settings-difficulty">
-                <div class="difficulty-title"> "Dificuldade"</div>
+        <div class="flex-center">
+            <div class="settings-section">
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easiest)} />
-                    <span>"🌶  "</span>
+                    <span> usar todas as letras: </span>
+                    <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.set_all_words.set(event_target_checked(&e))} />
                 </div>
                 <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easy)}/>
-                    <span>"🌶🌶  "</span>
+                    <span>letras permitidas: </span>  
+                    <ToggleKeyboard set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
+                    <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
                 </div>
-                <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Medium)} />
-                    <span>"🌶🌶🌶  "</span>
-                </div>
-                <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hard)}/>
-                    <span>"🌶🌶🌶🌶  "</span>
-                </div>
-                <div>
-                    <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hardest)} />
-                    <span>"🌶🌶🌶🌶🌶  "</span>
+                <div class="settings-difficulty">
+                    <div class="difficulty-title"> "Dificuldade"</div>
+                    <div>
+                        <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easiest)} />
+                        <span>"🌶  "</span>
+                    </div>
+                    <div>
+                        <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easy)}/>
+                        <span>"🌶🌶  "</span>
+                    </div>
+                    <div>
+                        <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Medium)} />
+                        <span>"🌶🌶🌶  "</span>
+                    </div>
+                    <div>
+                        <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hard)}/>
+                        <span>"🌶🌶🌶🌶  "</span>
+                    </div>
+                    <div>
+                        <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hardest)} />
+                        <span>"🌶🌶🌶🌶🌶  "</span>
+                    </div>
                 </div>
             </div>
         </div>

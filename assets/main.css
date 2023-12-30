@@ -42,13 +42,12 @@ body {
 
 .start-button {
     width: auto;
-    font-size: 4vmax;
-    height: 16vmin;
-    line-height: 8vmax;
+    font-size: 8vmin;
+    line-height: 16vmin;
     background-color: #e63946;
     color: #F1FAEE;
     text-align: center;
-    margin: 1vmin;
+    margin: 2vmin;
     border-radius: 5px;
 }
 

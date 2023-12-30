@@ -41,7 +41,7 @@ body {
 }
 
 .start-button {
-    width: auto;
+    width: 90vmin;
     font-size: 8vmin;
     line-height: 16vmin;
     background-color: #e63946;

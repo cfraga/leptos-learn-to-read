@@ -78,7 +78,9 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
                     </div>
             </div>
         </div>
-        <div class="start-button" on:click=start_new_run>"Começar!"</div>
+        <div class="flex-center">
+            <div class="start-button" on:click=start_new_run>"Começar!"</div>
+        </div>
     }
 }
 

@@ -6,10 +6,10 @@ use crate::app::{ Difficulty, RunSettings};
 use crate::lexicanum;
 
 #[derive(Clone, Debug, PartialEq)]
-struct ToggleableKey {
+struct ToggleableKey<T> {
     id: String,
     label: String,
-    value: String,
+    value: T,
     is_active: Signal<bool>,
     set_active: WriteSignal<bool>,
 }
@@ -32,6 +32,8 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
         get_server_words.dispatch((filter, settings.num_words.get(), settings.difficulty.get()));
     };
     
+    let keyboard_visible = Signal::derive( move || !settings.all_words.get());
+
     create_effect(move |_| {
         if let Some(Ok(word_pool)) = get_server_words.value().get() {
             logging::log!("words file was loaded. {} words retrieved", word_pool.len());
@@ -45,12 +47,11 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
         <div class="flex-center">
             <div class="settings-section">
                 <div>
-                    <span> usar todas as letras: </span>
-                    <input type="checkbox" prop:checked=settings.all_words on:input = move |e| { settings.set_all_words.set(event_target_checked(&e))} />
+                    <span>letras permitidas: </span>  
+                    <ToggleKey label="Todas".to_string() is_active=settings.all_words set_active=settings.set_all_words />
                 </div>
                 <div>
-                    <span>letras permitidas: </span>  
-                    <ToggleKeyboard set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
+                    <ToggleKeyboard is_visible=keyboard_visible set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
                     <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
                 </div>
                 <div class="settings-difficulty">
@@ -83,7 +84,7 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
 }
 
 #[component]
-pub fn toggle_keyboard( set_all_values: WriteSignal<String> ) -> impl IntoView {
+pub fn toggle_keyboard(set_all_values: WriteSignal<String>, is_visible: Signal<bool>) -> impl IntoView {
     let ids_labels_vals = vec![
         ("tk_A", "A", "aAàÀáÁâÂãÃ"),
         ("tk_E", "E", "eEèÈéÉêÊ"),
@@ -135,13 +136,13 @@ pub fn toggle_keyboard( set_all_values: WriteSignal<String> ) -> impl IntoView {
     });
 
     view! {
-        <div class="keyboard">
+        <div class="keyboard" style:display=move || if is_visible.get() { "flex" } else { "none" } >
             <For 
                 each=keys
                 key=|key| key.id.clone()
                 children= move |key| {
                     view! {
-                        <ToggleKey key=key></ToggleKey>
+                        <ToggleKey label=key.label is_active=key.is_active set_active=key.set_active />
                     }
                 }
             />
@@ -150,10 +151,10 @@ pub fn toggle_keyboard( set_all_values: WriteSignal<String> ) -> impl IntoView {
 }
 
 #[component]
-fn toggle_key(key: ToggleableKey) -> impl IntoView {
+fn toggle_key(label: String, is_active: Signal<bool>, set_active: WriteSignal<bool>) -> impl IntoView {
     view!{
-        <div class="key" class:active=key.is_active on:click= move |_| { key.set_active.set(!key.is_active.get()) }  >
-            {key.label}
+        <div class="key" class:active=is_active on:click= move |_| { set_active.set(!is_active.get()) }  >
+            {label}
         </div>
     }
 }

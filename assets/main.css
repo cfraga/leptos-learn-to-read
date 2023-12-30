@@ -6,7 +6,7 @@ body {
 .settings-title {
     font-family: 'Londrina Shadow', sans-serif;
     width: auto;
-    font-size: 25vmin;
+    font-size: 20vmin;
     margin: 1vmin 5vmin 1vmin 5vmin;
     text-align: center;
     font-weight: bold;
@@ -43,12 +43,12 @@ body {
 .start-button {
     width: auto;
     font-size: 4vmax;
-    height: 8vmax;
+    height: 16vmin;
     line-height: 8vmax;
     background-color: #e63946;
     color: #F1FAEE;
     text-align: center;
-    margin: 7vmax;
+    margin: 1vmin;
     border-radius: 5px;
 }
 
@@ -61,7 +61,6 @@ body {
     width: 90vmin;
     margin: 1vmin 5vmin 1vmin 5vmin;
     text-align: center;
-    height: 50vh;
 }
 .settings-section > div {
     margin: 1vh 0 1vh 0;

@@ -49,7 +49,6 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
                 <div class="allowed-letters-title">letras permitidas: </div>  
                 <div>
                     <ToggleKeyboard is_visible=keyboard_visible set_all_values = settings.set_allowed_chars > </ToggleKeyboard>
-                    <input type="text" on:input= move |e| { settings.set_allowed_chars.set(event_target_value(&e))} prop:value=settings.allowed_chars prop:disabled=settings.all_words />
                 </div>
                 <div class="all-words">
                     <ToggleKey label="Todas".to_string() is_active=settings.all_words set_active=settings.set_all_words />

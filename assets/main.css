@@ -49,6 +49,7 @@ body {
     text-align: center;
     margin: 2vmin;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 .flex-center {

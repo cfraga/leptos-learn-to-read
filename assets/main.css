@@ -15,15 +15,15 @@ body {
 .active-word {
     width: auto;
     font-size: 10vmax;
-    line-height: 40vh;
+    line-height: 40vmin;
     margin-left: 5vw;
     margin-right: 5vw;
     text-align: center;
 }
 .remaining-words {
     width: auto;
-    font-size: 3vh;
-    line-height: 10vh;
+    font-size: 3vmin;
+    line-height: 10vmin;
     margin-left: 5vw;
     margin-right: 5vw;
     text-align: center;
@@ -63,12 +63,13 @@ body {
     text-align: center;
 }
 .settings-section > div {
-    margin: 1vh 0 1vh 0;
+    margin: 1vmin 0 1vh 0;
 }
 
 .difficulty-title {
     font-size: larger;
     font-weight: bold;
+    margin: 1vmin 0vmin 1vmin 0vmin;
 }
 .allowed-letters-title {
     font-size: larger;
@@ -76,11 +77,12 @@ body {
 }
 
 .settings-difficulty {
-    margin-left: -10vw;
-    margin-top: 2vh;
-    margin-bottom: 2vh;
-    display: inline-block;
-    text-align: left;
+    margin-top: 1vmin;
+    margin-bottom: 1vmin;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    justify-content: center;
 }
 
 .all-words {
@@ -95,6 +97,10 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.difficulty-slider > img {
+    height: 5vmin;
 }
 
 .key {

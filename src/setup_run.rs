@@ -14,6 +14,16 @@ struct ToggleableKey<T> {
     set_active: WriteSignal<bool>,
 }
 
+fn difficulty_assets(diff: Difficulty) -> String {
+    match diff {
+        Difficulty::Easiest => "assets/progress_bars-01.svg",
+        Difficulty::Easy => "assets/progress_bars-02.svg",
+        Difficulty::Medium => "assets/progress_bars-03.svg",
+        Difficulty::Hard => "assets/progress_bars-04.svg",
+        Difficulty::Hardest => "assets/progress_bars-05.svg",
+    }.to_string()
+}
+
 #[component]
 pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) -> impl IntoView {
     let get_server_words = create_action(
@@ -55,31 +65,19 @@ pub fn setup_run(settings: RunSettings, #[prop(into)] onready: Callback<i32>) ->
                 </div>
                     <div class="settings-difficulty">
                         <div class="difficulty-title"> "Dificuldade"</div>
+                        <div class="difficulty-slider"><img prop:src=move || settings.difficulty.with( |diff| difficulty_assets(diff.clone())) ></img></div>
                         <div>
-                            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easiest)} />
-                            <span>"🌶  "</span>
-                        </div>
-                        <div>
-                            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easy)}/>
-                            <span>"🌶🌶  "</span>
-                        </div>
-                        <div>
-                            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Medium)} />
-                            <span>"🌶🌶🌶  "</span>
-                        </div>
-                        <div>
-                            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hard)}/>
-                            <span>"🌶🌶🌶🌶  "</span>
-                        </div>
-                        <div>
-                            <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hardest)} />
-                            <span>"🌶🌶🌶🌶🌶  "</span>
+                            <span> <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easiest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easiest)} /></span>
+                            <span> <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Easy) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Easy)}/></span>
+                            <span> <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Medium) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Medium)} /></span>
+                            <span> <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hard) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hard)}/></span>
+                            <span> <input type="radio" prop:checked=move || settings.difficulty.with( |diff| *diff == Difficulty::Hardest) on:input = move |_e| {settings.set_difficulty.set(Difficulty::Hardest)} /></span>
                         </div>
                     </div>
             </div>
         </div>
         <div class="flex-center">
-            <div class="start-button" on:click=start_new_run>"Começar!"</div>
+            <div class="start-button" on:click=start_new_run>"COMEÇAR"</div>
         </div>
     }
 }
@@ -93,7 +91,7 @@ pub fn toggle_keyboard(set_all_values: WriteSignal<String>, is_visible: Signal<b
         ("tk_O", "O", "oOôÔòÒóÓõÕ"),
         ("tk_U", "U", "uUùÙúÚ"),
         ("tk_B", "B", "bB"),
-        ("tk_C", "C", "cC"),
+        ("tk_C", "C", "cCÇ"),
         ("tk_D", "D", "dD"),
         ("tk_F", "F", "fF"),
         ("tk_G", "G", "gG"),
